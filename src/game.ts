@@ -161,9 +161,9 @@ class physicsUpdateSystem implements ISystem {
       rocketBody.updateMassProperties()
       rocketBody.applyForce(
         new CANNON.Vec3(
-          forwardVector.x * velocityScale,
           0,
-          forwardVector.z * velocityScale
+          0,
+          1 * velocityScale
         ),
         new CANNON.Vec3(
           rocketBody.position.x,
@@ -190,6 +190,7 @@ input.subscribe('BUTTON_DOWN', ActionButton.PRIMARY, false, () => {
 })
 input.subscribe('BUTTON_UP', ActionButton.PRIMARY, false, () => {
   isEKeyPressed = false
+  rocketBody.velocity.set(0, 0, 0)
   if (!isFKeyPressed) {
     activateRocketBooster(false)
   }
