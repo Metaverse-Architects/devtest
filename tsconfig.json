@@ -10,6 +10,9 @@
     },
     "baseUrl": "."
   },
+  "files": [
+    "node_modules/cannon/build/cannon.min.js"
+  ],
   "include": [
     "src/**/*.ts"
   ],

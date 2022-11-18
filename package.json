@@ -22,7 +22,9 @@
     "yarn": "please use npm"
   },
   "dependencies": {
-    "@dcl/ecs-scene-utils": "latest"
+    "@dcl/ecs-scene-utils": "latest",
+    "cannon": "^0.6.2",
+    "@types/cannon": "^0.1.4"
   },
   "bundleDependencies": [
     "@dcl/ecs-scene-utils"

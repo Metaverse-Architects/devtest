@@ -2,6 +2,7 @@ import { movePlayerTo } from "@decentraland/RestrictedActions"
 import { TriggerButton } from "./triggerButton"
 import * as utils from '@dcl/ecs-scene-utils'
 import { createCoin } from "./coin"
+import { Sound } from "./sound"
 
 const museum = new Entity()
 const museumcolliders = new Entity()
@@ -51,6 +52,15 @@ rocketboard.addComponentOrReplace(new Transform({
   rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
 }))
 
+const rocketFlames = new Entity()
+rocketFlames.addComponent(new Transform({ scale: new Vector3(0, 0, 0) }))
+rocketFlames.addComponent(new GLTFShape('models/rocketFlames.glb'))
+rocketFlames.setParent(rocketboard)
+const rocketBoosterSound = new Sound(
+  new AudioClip('sounds/rocketBooster.mp3'),
+  true
+)
+
 portal.addComponentOrReplace(new Transform({
   position: new Vector3(16.07, 1.19, 7.39),
   scale: new Vector3(1, 1, 1),
@@ -80,6 +90,126 @@ portal2.onClick = () => {
 
 portal3.onClick = () => {
   movePlayerTo(new Vector3(12, 24.88, 7.44), new Vector3(15.99, 9.68, 3.13))
+}
+// vectors
+let forwardVector = Vector3.Forward().rotate(Camera.instance.rotation)
+const velocityScale = 250
+
+// // world
+const world = new CANNON.World()
+world.gravity.set(0, -9.82, 0)
+const groundMaterial = new CANNON.Material('groundMaterial')
+const groundContactMaterial = new CANNON.ContactMaterial(
+  groundMaterial,
+  groundMaterial,
+  { friction: 0.5, restitution: 0.33 }
+)
+
+// //Create ground plane and apply physics material
+const groundBody = new CANNON.Body({ mass: 0 })
+groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2) //Reorient ground plane to be on the y axis
+
+const groundShape: CANNON.Plane = new CANNON.Plane()
+groundBody.addShape(groundShape)
+groundBody.material = groundMaterial
+world.addBody(groundBody)
+
+const boxMaterial = new CANNON.Material('boxMaterial')
+const boxContactMaterial = new CANNON.ContactMaterial(
+  groundMaterial,
+  boxMaterial,
+  { friction: 0.4, restitution: 0 }
+)
+
+world.addContactMaterial(boxContactMaterial)
+
+const rocketTransform = rocketboard.getComponent(Transform)
+
+const rocketBody: CANNON.Body = new CANNON.Body({
+  mass: 5,
+  position: new CANNON.Vec3(
+    rocketTransform.position.x,
+    rocketTransform.position.y,
+    rocketTransform.position.z
+  ),
+  shape: new CANNON.Box(new CANNON.Vec3(2, 0.1, 2)) //Create a spherical body with radius 1
+})
+rocketBody.material = boxMaterial
+world.addBody(rocketBody)
+
+const fixedTimeStep: number = 1.0 / 60.0
+const maxSubSteps: number = 3
+
+class physicsUpdateSystem implements ISystem {
+  update(dt: number): void {
+    world.step(fixedTimeStep, dt, maxSubSteps)
+
+    if (isFKeyPressed) {
+      rocketBody.applyForce(
+        new CANNON.Vec3(0, 1 * velocityScale, 0),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+    if (isEKeyPressed) {
+      rocketBody.applyForce(
+        new CANNON.Vec3(
+          forwardVector.x * velocityScale,
+          0,
+          forwardVector.z * velocityScale
+        ),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+    rocketBody.angularVelocity.setZero()
+    rocketboard.getComponent(Transform).position.copyFrom(rocketBody.position)
+    forwardVector = Vector3.Forward().rotate(Camera.instance.rotation)
+  }
+}
+
+engine.addSystem(new physicsUpdateSystem())
+
+const input = Input.instance
+let isFKeyPressed = false
+let isEKeyPressed = false
+
+// E Key
+input.subscribe('BUTTON_DOWN', ActionButton.PRIMARY, false, () => {
+  activateRocketBooster((isEKeyPressed = true))
+})
+input.subscribe('BUTTON_UP', ActionButton.PRIMARY, false, () => {
+  isEKeyPressed = false
+  if (!isFKeyPressed) {
+    activateRocketBooster(false)
+  }
+})
+
+// F Key
+input.subscribe('BUTTON_DOWN', ActionButton.SECONDARY, false, () => {
+  activateRocketBooster((isFKeyPressed = true))
+})
+input.subscribe('BUTTON_UP', ActionButton.SECONDARY, false, () => {
+  isFKeyPressed = false
+  if (!isEKeyPressed) {
+    activateRocketBooster(false)
+  }
+})
+
+function activateRocketBooster(isOn: boolean) {
+  if (isOn) {
+    rocketBoosterSound.getComponent(AudioSource).playing = true
+    rocketFlames.getComponent(Transform).scale.setAll(1)
+  } else {
+    rocketBoosterSound.getComponent(AudioSource).playing = false
+    rocketFlames.getComponent(Transform).scale.setAll(0)
+  }
 }
 
 engine.addEntity(portal)
