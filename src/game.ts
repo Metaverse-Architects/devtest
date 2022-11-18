@@ -137,7 +137,7 @@ class physicsUpdateSystem implements ISystem {
         )
       )
     }
-    if (isFKeyPressed && rocketBody.position.y > 28) {
+    if (isFKeyPressed && rocketBody.position.y > 30) {
       rocketBody.velocity.set(0, 0, 10)
       rocketBody.mass = 5
       rocketBody.updateMassProperties()
