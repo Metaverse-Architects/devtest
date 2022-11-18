@@ -3,7 +3,6 @@ import { TriggerButton } from "./triggerButton"
 import * as utils from '@dcl/ecs-scene-utils'
 import { createCoin } from "./coin"
 import { Sound } from "./sound"
-import { Body } from "cannon"
 
 const museum = new Entity()
 const museumcolliders = new Entity()
@@ -126,7 +125,7 @@ class physicsUpdateSystem implements ISystem {
   update(dt: number): void {
     world.step(fixedTimeStep, dt, maxSubSteps)
 
-    if (isFKeyPressed) {
+    if (isFKeyPressed && rocketBody.position.y < 28) {
       rocketBody.mass = 5
       rocketBody.updateMassProperties()
       rocketBody.applyForce(
@@ -137,6 +136,83 @@ class physicsUpdateSystem implements ISystem {
           rocketBody.position.z
         )
       )
+    }
+    if (isFKeyPressed && rocketBody.position.y > 28) {
+      rocketBody.velocity.set(0, 0, 10)
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
+      rocketBody.applyForce(
+        new CANNON.Vec3(
+          0,
+          0,
+          1 * velocityScale
+        ),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+
+    if (isFKeyPressed && rocketBody.position.z > 18) {
+      rocketBody.velocity.set(0, -10, 0)
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
+      rocketBody.applyForce(
+        new CANNON.Vec3(
+          0,
+          -1 * velocityScale,
+          0
+        ),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+
+    if (isFKeyPressed && rocketBody.position.y < 1) {
+      rocketBody.velocity.set(10, 0, 0)
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
+      rocketBody.applyForce(
+        new CANNON.Vec3(
+          1 * velocityScale,
+          0,
+          0
+        ),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+
+    if (isFKeyPressed && rocketBody.position.x > 16 && rocketBody.position.y < 1) {
+      rocketBody.velocity.set(0, 0, -10)
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
+      rocketBody.applyForce(
+        new CANNON.Vec3(
+          0,
+          0,
+          -1 * velocityScale
+        ),
+        new CANNON.Vec3(
+          rocketBody.position.x,
+          rocketBody.position.y,
+          rocketBody.position.z
+        )
+      )
+    }
+
+    if (isFKeyPressed && rocketBody.position.y < 1 && rocketBody.position.z < 10) {
+      rocketBody.mass = 0
+      rocketBody.updateMassProperties()
+      rocketBody.velocity.set(0, 0, 0)
     }
     if (isEKeyPressed) {
       rocketBody.mass = 5
@@ -172,6 +248,8 @@ input.subscribe('BUTTON_DOWN', ActionButton.PRIMARY, false, () => {
 })
 input.subscribe('BUTTON_UP', ActionButton.PRIMARY, false, () => {
   isEKeyPressed = false
+  rocketBody.mass = 0
+  rocketBody.updateMassProperties()
   rocketBody.velocity.set(0, 0, 0)
   if (!isFKeyPressed) {
     activateRocketBooster(false)
@@ -184,6 +262,9 @@ input.subscribe('BUTTON_DOWN', ActionButton.SECONDARY, false, () => {
 })
 input.subscribe('BUTTON_UP', ActionButton.SECONDARY, false, () => {
   isFKeyPressed = false
+  rocketBody.mass = 0
+  rocketBody.updateMassProperties()
+  rocketBody.velocity.set(0, 0, 0)
   if (!isEKeyPressed) {
     activateRocketBooster(false)
   }
