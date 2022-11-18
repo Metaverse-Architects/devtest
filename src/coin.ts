@@ -1,5 +1,4 @@
 import * as utils from '@dcl/ecs-scene-utils'
-import { movePlayerTo } from "@decentraland/RestrictedActions"
 
 /**
  * Sound is a separated from the coin entity so that you can
@@ -18,7 +17,7 @@ export function createCoin(
     model: GLTFShape,
     transform: Transform,
     triggerShape: utils.TriggerBoxShape,
-    addCounter: any
+    addCounter: Function
 ): Entity {
     const entity = new Entity()
     engine.addEntity(entity)
