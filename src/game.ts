@@ -100,11 +100,6 @@ const velocityScale = 250
 const world = new CANNON.World()
 world.gravity.set(0, -9.82, 0)
 const groundMaterial = new CANNON.Material('groundMaterial')
-const groundContactMaterial = new CANNON.ContactMaterial(
-  groundMaterial,
-  groundMaterial,
-  { friction: 0.5, restitution: 0.33 }
-)
 
 // //Create ground plane and apply physics material
 const groundBody = new CANNON.Body({ mass: 0 })
@@ -116,13 +111,6 @@ groundBody.material = groundMaterial
 world.addBody(groundBody)
 
 const boxMaterial = new CANNON.Material('boxMaterial')
-const boxContactMaterial = new CANNON.ContactMaterial(
-  groundMaterial,
-  boxMaterial,
-  { friction: 0.4, restitution: 0 }
-)
-
-world.addContactMaterial(boxContactMaterial)
 
 const rocketBody: CANNON.Body = new CANNON.Body({
   mass: 0,
