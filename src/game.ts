@@ -3,6 +3,7 @@ import { TriggerButton } from "./triggerButton"
 import * as utils from '@dcl/ecs-scene-utils'
 import { createCoin } from "./coin"
 import { Sound } from "./sound"
+import { Body } from "cannon"
 
 const museum = new Entity()
 const museumcolliders = new Entity()
@@ -46,7 +47,7 @@ museum.addComponent(new GLTFShape('models/YW_MainGeo_1.glb'))
 museumcolliders.addComponent(new GLTFShape('models/YW_Colliders_1.glb'))
 assets.addComponent(new GLTFShape('models/YW_Assets_1.glb'))
 rocketboard.addComponent(new GLTFShape('models/rocketBoard.glb'))
-rocketboard.addComponentOrReplace(new Transform({
+const rocketBoardTransform = rocketboard.addComponentOrReplace(new Transform({
   position: new Vector3(10.00, 24.88, 7.44),
   scale: new Vector3(1, 1, 1),
   rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
@@ -123,16 +124,15 @@ const boxContactMaterial = new CANNON.ContactMaterial(
 
 world.addContactMaterial(boxContactMaterial)
 
-const rocketTransform = rocketboard.getComponent(Transform)
-
 const rocketBody: CANNON.Body = new CANNON.Body({
-  mass: 5,
+  mass: 0,
   position: new CANNON.Vec3(
-    rocketTransform.position.x,
-    rocketTransform.position.y,
-    rocketTransform.position.z
+    rocketBoardTransform.position.x,
+    rocketBoardTransform.position.y,
+    rocketBoardTransform.position.z
   ),
-  shape: new CANNON.Box(new CANNON.Vec3(2, 0.1, 2)) //Create a spherical body with radius 1
+  shape: new CANNON.Box(new CANNON.Vec3(2, 0.1, 2)), //Create a spherical body with radius 1
+  type: CANNON.Body.DYNAMIC
 })
 rocketBody.material = boxMaterial
 world.addBody(rocketBody)
@@ -145,6 +145,8 @@ class physicsUpdateSystem implements ISystem {
     world.step(fixedTimeStep, dt, maxSubSteps)
 
     if (isFKeyPressed) {
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
       rocketBody.applyForce(
         new CANNON.Vec3(0, 1 * velocityScale, 0),
         new CANNON.Vec3(
@@ -155,6 +157,8 @@ class physicsUpdateSystem implements ISystem {
       )
     }
     if (isEKeyPressed) {
+      rocketBody.mass = 5
+      rocketBody.updateMassProperties()
       rocketBody.applyForce(
         new CANNON.Vec3(
           forwardVector.x * velocityScale,
