@@ -22,28 +22,18 @@ dcl start
 
 Any dependencies are installed and then the CLI opens the scene in a new browser tab.
 
-## Deploy to Decentraland
+## Game Flow
+The 1st level of the museum contains a Portal to the 2nd level of the museum. 
 
-If you own any parcels of land in Decentraland, or have permissions to deploy to someone else's, you can publish this project.
+The 2nd level of the museum is interesting. If you collect all 10 coins, you teleport into the 3rd
+level of the museum.
 
-1. Make sure the scene parcels in `scene.json` match those you own or have permissions on.
-2. Run `dcl deploy` on the project folder
-3. This will open a browser tab to confirm. Metamask will prompt you to sign.
-   > Note: Make sure you are using the wallet that owns the parcels or has permissions.
+The 3rd level of the museum contains a portal to the 4th level of the museum which is the Rooftop.
 
-### Deploy to a free server
+At the 4th level, there is a special device. A Rocketboard! When you hop on it, press `F` to fly yourself down to the ground floor.
 
-If you don't own parcels in Decentraland or are not ready to publish your scene to the world, you can share your creations by uploading your scenes to a free hosting service.
-
-See [Upload a preview](https://docs.decentraland.org/development-guide/deploy-to-now/) for instructions on how to do this.
-
-## Resources
-
-Learn more about how to build your own scenes in our [documentation](https://docs.decentraland.org/) site.
-
-Find more example scenes, tutorials and helper libraries in the [Awesome Repository](https://github.com/decentraland-scenes/Awesome-Repository).
-
-If you need any help, join [Decentraland's Discord](https://dcl.gg/discord), where you'll find a vibrant community of other creators who are eager to help. You're sure to find help in the #SDK support channel.
+>**NOTE**
+To interact with the portal and the Rocketboard, ensure you have clicked on the screen such that a circular target appears on the screen.
 
 ## Copyright info
 
