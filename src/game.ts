@@ -14,10 +14,16 @@ const portal2 = new TriggerButton()
 const portal3 = new TriggerButton()
 const coinShape = new GLTFShape('models/coin.glb')
 const coinPositions = [
-  new Vector3(10, 9, 9),
-  new Vector3(19, 9, 10),
-  new Vector3(8, 9, 8),
-  new Vector3(8, 9, 9)
+  new Vector3(10, 9, 6),
+  new Vector3(8, 9, 6),
+  new Vector3(6, 9, 6),
+  new Vector3(4, 9, 6),
+  new Vector3(10, 9, 10),
+  new Vector3(8, 9, 10),
+  new Vector3(6, 9, 10),
+  new Vector3(4, 9, 10),
+  new Vector3(10, 9, 8),
+  new Vector3(4, 9, 8),
 ]
 const triggerBoxShape = new utils.TriggerBoxShape(
   new Vector3(1.5, 3, 1.5),
@@ -27,9 +33,8 @@ const triggerBoxShape = new utils.TriggerBoxShape(
 let counter = 0
 
 const addCounter = () => {
-  counter++
-  if (counter > 2) {
-    movePlayerTo(new Vector3(12, 24.88, 7.44), new Vector3(15.99, 9.68, 3.13))
+  if (++counter === 10) {
+    movePlayerTo(new Vector3(12, 20, 7.39), new Vector3(15.99, 9.68, 3.13))
   }
 }
 
@@ -70,12 +75,6 @@ portal.addComponentOrReplace(new Transform({
 portal.onClick = () => {
   movePlayerTo(new Vector3(16.20, 9.68, 10.29), new Vector3(15.99, 9.68, 3.13))
 }
-//portal.removeComponent(BoxShape)
-portal2.addComponentOrReplace(new Transform({
-  position: new Vector3(10, 9.68, 10.29),
-  scale: new Vector3(1, 1, 1),
-  rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
-}))
 
 portal3.addComponentOrReplace(new Transform({
   position: new Vector3(10, 18, 10.29),
@@ -83,11 +82,6 @@ portal3.addComponentOrReplace(new Transform({
   rotation: new Quaternion().setEuler(0.000, 0.000, 0.000)
 }))
 
-
-
-portal2.onClick = () => {
-  movePlayerTo(new Vector3(12, 20, 7.39), new Vector3(15.99, 9.68, 3.13))
-}
 
 portal3.onClick = () => {
   movePlayerTo(new Vector3(12, 24.88, 7.44), new Vector3(15.99, 9.68, 3.13))
