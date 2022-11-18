@@ -34,7 +34,7 @@ let counter = 0
 
 const addCounter = () => {
   if (++counter === 10) {
-    movePlayerTo(new Vector3(12, 20, 7.39), new Vector3(15.99, 9.68, 3.13))
+    movePlayerTo(new Vector3(16.20, 20, 10.29), new Vector3(15.99, 9.68, 3.13))
   }
 }
 
@@ -77,14 +77,14 @@ portal.onClick = () => {
 }
 
 portal3.addComponentOrReplace(new Transform({
-  position: new Vector3(10, 18, 10.29),
+  position: new Vector3(16.07, 17, 7.39),
   scale: new Vector3(1, 1, 1),
   rotation: new Quaternion().setEuler(0.000, 0.000, 0.000)
 }))
 
 
 portal3.onClick = () => {
-  movePlayerTo(new Vector3(12, 24.88, 7.44), new Vector3(15.99, 9.68, 3.13))
+  movePlayerTo(new Vector3(16.20, 24.88, 10.29), new Vector3(15.99, 9.68, 3.13))
 }
 // vectors
 let forwardVector = Vector3.Forward().rotate(Camera.instance.rotation)
